@@ -1,15 +1,18 @@
-def PuzzleFile():
-    import sys
+def SolvePuzzle(input_file:str):
+    f = open(input_file) 
+    contains = 0
+    overlaps = 0
 
-    dir = sys.argv[0].split("/")[1]
-    if len(sys.argv) > 1 and sys.argv[1] == "--demo":
-        data = "input-demo.txt"
-    else:
-        data = "input.txt"
+    for line in f:
+        data = line.strip().split(",")
+        if SectionContains(data[0],data[1]) == True:
+            contains = contains + 1
+        if SectionOverlaps(data[0],data[1]) == True:
+            overlaps = overlaps + 1
 
-    return "./"+dir+"/"+data
 
-f = open(PuzzleFile())
+    print(contains)
+    print(overlaps)
 
 def SectionContains(s1:str,s2:str):
     s1a = s1.split("-")
@@ -60,16 +63,4 @@ def SectionOverlaps(s1:str,s2:str):
     
 
 
-contains = 0
-overlaps = 0
 
-for line in f:
-    data = line.strip().split(",")
-    if SectionContains(data[0],data[1]) == True:
-        contains = contains + 1
-    if SectionOverlaps(data[0],data[1]) == True:
-        overlaps = overlaps + 1
-
-
-print(contains)
-print(overlaps)

@@ -1,4 +1,32 @@
-f = open("./puzzle-003-input.txt") 
+def SolvePuzzle(input_file:str):
+    f = open(input_file) 
+    total = 0
+    total2 = 0
+
+    j = 0
+    buffer = []
+
+    for line in f:
+        data = line.strip()
+        c = FindItemPriority(data)
+        pos = CharToInt(c)
+        total += pos
+        #print(c, "/", pos)
+
+        buffer.append(data)
+        j = j+1
+
+        if j % 3 == 0:
+            total2 = total2 + FindBadge(buffer)
+            buffer = []
+            j = 0
+        else:
+            pass
+
+
+    print(total)
+    print(total2)
+
 
 def FindItemPriority(data: str): 
     length = int(len(data)/2)
@@ -41,30 +69,5 @@ def FindBadge(ruck: list):
         if CompartmentHasBoth(chx, b, c):
             return CharToInt(chx)
 
-total = 0
-total2 = 0
 
-j = 0
-buffer = []
-
-for line in f:
-    data = line.strip()
-    c = FindItemPriority(data)
-    pos = CharToInt(c)
-    total += pos
-    #print(c, "/", pos)
-
-    buffer.append(data)
-    j = j+1
-
-    if j % 3 == 0:
-        total2 = total2 + FindBadge(buffer)
-        buffer = []
-        j = 0
-    else:
-        pass
-
-
-print(total)
-print(total2)
 

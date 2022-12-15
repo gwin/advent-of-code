@@ -108,27 +108,43 @@ class Forest:
         return self.scenic_rank
 
     def GetTreeScenicRank(self, i:int, j:int) -> list:
-        r = [1, 1, 1, 1, 1]
+        r = [0, 0, 0, 0, 1]
         tree = self.forest[i][j]
 
+        #print("-> ", j-1, self.max_y)
+
         for x in range(j-1, -1, -1):
-            #print(x)
-            if tree > self.forest[i][x]:
-                r[0] += 1
-            else:
+            #print("->",self.forest[i][x])
+            r[0] += 1
+            if tree <= self.forest[i][x]:
                 break
 
+
         for x in range(j+1, self.max_y):
-            #print(x)
-            if tree > self.forest[i][x]:
-                r[1] += 1
-            else:
+            #print("->",self.forest[i][x])
+            r[1] +=1
+            if tree <= self.forest[i][x]:
                 break
+
+        for x in range(i-1, -1, -1):
+            #print("->",self.forest[i][x])
+            r[2] += 1
+            if tree <= self.forest[x][j]:
+                break
+
+        for x in range(i+1, self.max_x):
+            #print("->",self.forest[i][x])
+            r[3] +=1
+            if tree <= self.forest[x][j]:
+                break
+
+        r[4] = r[0] * r[1] * r[2] * r[3]
 
         return r
 
 
     def RankByScenicView(self):
+        self.scenic_rank = []
         for i in range(self.max_x):
             self.scenic_rank.append([])
             for j in range(self.max_y):
@@ -136,12 +152,30 @@ class Forest:
             # endfor
         # endfor
 
+    def GetHighestScenicRank(self):
+        if not self.scenic_rank:
+            self.RankByScenicView()
+
+        highest_rank = 0
+        for rank_row in self.scenic_rank:
+            for rank in rank_row:
+                if rank[4] > highest_rank:
+                    highest_rank = rank[4]
+                # endif
+            # endfor
+        # endfor
+
+        return highest_rank
 
 
 forest = Forest()
 forest.PlantTrees()
 
 #forest.CheckTreeVisibility(2,3)
-print(forest.GetTreeScenicRank(1,2))
+#print(forest.GetTreeScenicRank(1,2))
+#print(forest.GetTreeScenicRank(3,2))
 
-#print(forest.GetVisibleTrees())
+forest.RankByScenicView()
+#print(forest.scenic_rank)
+
+print(forest.GetHighestScenicRank())
