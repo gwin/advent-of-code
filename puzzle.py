@@ -68,7 +68,10 @@ elif sys.argv[1] == "help":
     print_instructions = True
 elif sys.argv[1] == "run":
     Puzzle = importlib.import_module("puzzle-" + sys.argv[2] + ".main")
-    Puzzle.SolvePuzzle(PuzzleFile())
+    if not callable(getattr(Puzzle, "SolvePuzzle")):
+        print("This puzzle needs to be run directly.")
+    else:
+        Puzzle.SolvePuzzle(PuzzleFile())
 elif sys.argv[1] == "create":
     PuzzleCreate()
 

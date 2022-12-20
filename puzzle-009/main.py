@@ -1,9 +1,9 @@
 def SolvePuzzle(input_file:str):
-    cb1 = RopeBridge(1)
+    cb1 = RopeBridge(9)
     cb1.cross(input_file)
 
-    cb2 = RopeBridge(9)
-    cb2.cross(input_file)
+    #cb2 = RopeBridge(9)
+    #cb2.cross(input_file)
 
 class RopeBridge:
     f = None
@@ -28,7 +28,7 @@ class RopeBridge:
             self.knots.append({
                 "x": 0,
                 "y": 0,
-                "positions": {}
+                "positions": []
             })
         pass
 
@@ -73,7 +73,7 @@ class RopeBridge:
             k = self.tail_needs_to_move(x1, y1, i)
             x1 = int(k["x"])
             y1 = int(k["y"])
-            print( "--> (", i, ") ", k["x"], k["y"])
+            
         
 
     def tail_needs_to_move(self, x:int, y:int, i:int):
@@ -86,7 +86,9 @@ class RopeBridge:
         tx = int(self.knots[i]["x"])
         ty = int(self.knots[i]["y"])
 
-        if hx - tx == 1 and hy - ty == 2 or hx - tx == 2 and hy - ty == 1:
+        #print( "--> (", i, ") ", x, y, tx, ty)
+
+        if hx - tx == 1 and hy - ty == 2 or hx - tx == 2 and hy - ty == 1 or hx - tx == 2 and hy - ty == 2:
             '''
             4.....
             3.....
@@ -97,8 +99,8 @@ class RopeBridge:
             '''
             self.knots[i]["x"] += 1
             self.knots[i]["y"] += 1
-            print("=> tru (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
-        elif hx - tx == -1 and hy - ty == 2 or hx - tx == -2 and hy - ty == 1:
+            print("=> tru k=",i+1," (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
+        elif hx - tx == -1 and hy - ty == 2 or hx - tx == -2 and hy - ty == 1 or hx - tx == -2 and hy - ty == 2:
             '''
             4.....
             3.....
@@ -109,8 +111,8 @@ class RopeBridge:
             '''
             self.knots[i]["x"] -= 1
             self.knots[i]["y"] += 1
-            print("=> tlu (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
-        elif hx - tx == 1 and hy - ty == -2 or hx - tx == 2 and hy - ty == -1:
+            print("=> tlu k=",i+1," (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
+        elif hx - tx == 1 and hy - ty == -2 or hx - tx == 2 and hy - ty == -1 or hx - tx == 2 and hy - ty == -2:
             '''
             4.t...
             3.T...
@@ -121,8 +123,8 @@ class RopeBridge:
             '''
             self.knots[i]["x"] += 1
             self.knots[i]["y"] -= 1
-            print("=> trd (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
-        elif hx - tx == -1 and hy - ty == -2 or hx - tx == -2 and hy - ty == -1:
+            print("=> trd k=",i+1," (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
+        elif hx - tx == -1 and hy - ty == -2 or hx - tx == -2 and hy - ty == -1 or hx - tx == -2 and hy - ty == -2:
             '''
             4...t.
             3.....
@@ -133,24 +135,26 @@ class RopeBridge:
             '''
             self.knots[i]["x"] -= 1
             self.knots[i]["y"] -= 1
-            print("=> tld (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
+            print("=> tld k=",i+1," (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
         elif hx - tx == 2 and hy - ty == 0:
             self.knots[i]["x"] += 1
-            print("=> tr (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
+            print("=> tr k=",i+1," (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
         elif hx - tx == -2 and hy - ty == 0:
             self.knots[i]["x"] -= 1
-            print("=> tl (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
+            print("=> tl k=",i+1," (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
         elif hx - tx == 0 and hy - ty == 2:
             self.knots[i]["y"] += 1
-            print("=> tu (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
+            print("=> tu k=",i+1," (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
         elif hx - tx == 0 and hy - ty == -2:
             self.knots[i]["y"] -= 1
-            print("=> td (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
+            print("=> td k=",i+1," (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
+        else:
+            print("=> idle k=",i+1," (", self.knots[i]["x"], ",", self.knots[i]["y"], ")")
 
         
         tpos = str(self.knots[i]["x"]) + "/" + str(self.knots[i]["y"])
         #self.tmoves.append(tpos)
-        self.knots[i]["positions"][tpos] = 1
+        self.knots[i]["positions"].append(tpos)
 
         return self.knots[i]
 
@@ -162,10 +166,23 @@ class RopeBridge:
             self.walk(data[0].lower(), int(data[1]))
 
         l = len(self.knots)
-        #print((self.knots))
-        print(len(self.knots[l-1]["positions"]))
+        #print(self.knots[l-1]["positions"])
 
+        uq = self.unique(self.knots[l-1]["positions"])
+        print(len(uq))
 
+    def unique(self, list1:list) -> list:
+    
+        # initialize a null list
+        unique_list = []
+    
+        # traverse for all elements
+        for x in list1:
+            # check if exists in unique_list or not
+            if x not in unique_list:
+                unique_list.append(x)
+        # print list
+        return unique_list
 
     def print_pos(self):
         for y in range(self.maxy, self.miny, -1):
